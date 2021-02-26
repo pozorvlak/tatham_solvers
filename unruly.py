@@ -10,7 +10,7 @@ WHITE = 2
 
 def char_to_enum(c):
     return {
-            ' ': UNKNOWN,
+            '_': UNKNOWN,
             'B': BLACK,
             'W': WHITE
             }[c]
@@ -92,40 +92,34 @@ def space_for_three(line, c):
     return starts
 
 
-def intersect_threes(starts, n):
+def intersect_threes(starts, indices):
     """Given start indices for triples, find spaces common to them all"""
-    if len(starts) == 0:
-        return set(range(2 * n))
-    i = starts.pop(0)
-    indices = set([i, i + 1, i + 2])
-    print(indices)
     for j in starts:
         indices &= set([j, j + 1, j + 2])
-        print(indices)
     return indices
+
+
+def possible_remaining(line, c, unknowns):
+    possible_threes = space_for_three(line, other(c))
+    others = intersect_threes(possible_threes, unknowns)
+    return others
 
 
 def complete_line(line, i):
     n = len(line) // 2
     whites, blacks = counts(line)
-    unknowns = [j for j, s in enumerate(line) if s == UNKNOWN]
+    unknowns = set([j for j, s in enumerate(line) if s == UNKNOWN])
     if whites == n:
         return [(BLACK, j) for j in unknowns]
     if blacks == n:
         return [(WHITE, j) for j in unknowns]
     if whites == n - 1:
-        possible_threes = space_for_three(line, BLACK)
-        possible_whites = intersect_threes(possible_threes, n)
-        print(f"possible_whites = {possible_whites}")
-        updates = [(BLACK, j) for j in unknowns if j not in possible_whites]
-        print(f"Completing line {board_to_str([line])}: updates = {updates}")
+        possible_whites = possible_remaining(line, WHITE, unknowns)
+        updates = [(BLACK, j) for j in unknowns - possible_whites]
         return updates
     if blacks == n - 1:
-        possible_threes = space_for_three(line, WHITE)
-        possible_blacks = intersect_threes(possible_threes, n)
-        print(f"possible_blacks = {possible_blacks}")
-        updates = [(WHITE, j) for j in unknowns if j not in possible_blacks]
-        print(f"Completing line {board_to_str([line])}: updates = {updates}")
+        possible_blacks = possible_remaining(line, BLACK, unknowns)
+        updates = [(WHITE, j) for j in unknowns - possible_blacks]
         return updates
     return []
 
