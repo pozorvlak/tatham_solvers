@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import fileinput
+from itertools import chain
 
 
 UNKNOWN = 0
@@ -81,8 +82,48 @@ def fill_in_holes(board, i, j):
     return updates
 
 
+def counts(unit):
+    whites, blacks = 0, 0
+    for space in unit:
+        whites += (space == WHITE)
+        blacks += (space == BLACK)
+    return whites, blacks
+
+
+def complete_row(board, i, j):
+    row = board[i]
+    n = len(row) // 2
+    c = board[i][j]
+    o = other(c)
+    whites, blacks = counts(row)
+    if whites == n:
+        return [(BLACK, i, jj) for jj in range(len(row)) if row[jj] == UNKNOWN]
+    if blacks == n:
+        return [(WHITE, i, jj) for jj in range(len(row)) if row[jj] == UNKNOWN]
+    return []
+
+
+def complete_col(board, i, j):
+    col = [row[j] for row in board]
+    n = len(col) // 2
+    c = board[i][j]
+    o = other(c)
+    whites, blacks = counts(col)
+    if whites == n:
+        return [(BLACK, ii, j) for ii in range(len(col)) if col[ii] == UNKNOWN]
+    if blacks == n:
+        return [(WHITE, ii, j) for ii in range(len(col)) if col[ii] == UNKNOWN]
+    return []
+
+
 def all_updates(board, i, j):
-    return two_in_a_row(board, i, j) + fill_in_holes(board, i, j)
+    propagators = [
+            two_in_a_row,
+            fill_in_holes,
+            complete_row,
+            complete_col,
+        ]
+    return chain.from_iterable((p(board, i, j) for p in propagators))
 
 
 def propagate(board):
@@ -92,9 +133,9 @@ def propagate(board):
     while len(frontier) > 0:
         (i, j) = frontier.pop(0)
         for (c, ii, jj) in all_updates(board, i, j):
-            if ii < 0 or ii > len(board):
+            if ii < 0 or ii >= len(board):
                 continue
-            elif jj < 0 or jj > len(board[ii]):
+            elif jj < 0 or jj >= len(board[ii]):
                 continue
             elif board[ii][jj] == c:
                 continue
