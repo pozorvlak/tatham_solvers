@@ -72,9 +72,9 @@ def fill_in_holes(line, i):
     return updates
 
 
-def counts(unit):
+def counts(line):
     whites, blacks = 0, 0
-    for space in unit:
+    for space in line:
         whites += (space == WHITE)
         blacks += (space == BLACK)
     return whites, blacks
