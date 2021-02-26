@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import fileinput
-from itertools import chain
 
 
 UNKNOWN = 0
@@ -38,47 +37,38 @@ def board_to_str(board):
     return "\n".join(["".join([' BW'[e] for e in row]) for row in board])
 
 
-def space_contains(board, i, j, c):
-    if i < 0 or i >= len(board):
+def space_contains(line, i, c):
+    if i < 0 or i >= len(line):
         return False
-    if j < 0 or j >= len(board[i]):
-        return False
-    return board[i][j] == c
+    return line[i] == c
 
 
-def two_in_a_row(board, i, j):
-    """If (i, j) is part of any pairs, return a list of end-caps"""
+def two_in_a_row(line, i):
+    """If line[i] is part of any pairs, return a list of end-caps"""
     # print(f"two_in_a_row on {i, j}")
-    c = board[i][j]
+    c = line[i]
     o = other(c)
     if c == UNKNOWN:
         return []
     updates = []
-    if space_contains(board, i, j + 1, c):
-        updates.extend([(o, i, j + 2), (o, i, j - 1)])
-    if space_contains(board, i, j - 1, c):
-        updates.extend([(o, i, j - 2), (o, i, j + 1)])
-    if space_contains(board, i + 1, j, c):
-        updates.extend([(o, i + 2, j), (o, i - 1, j)])
-    if space_contains(board, i - 1, j, c):
-        updates.extend([(o, i - 2, j), (o, i + 1, j)])
+    if space_contains(line, i + 1, c):
+        updates.extend([(o, i + 2), (o, i - 1)])
+    if space_contains(line, i - 1, c):
+        updates.extend([(o, i - 2), (o, i + 1)])
     return updates
 
 
-def fill_in_holes(board, i, j):
-    c = board[i][j]
+def fill_in_holes(line, i):
+    """If line[i] is part of an 'X X' pattern, fill in the hole"""
+    c = line[i]
     o = other(c)
     if c == UNKNOWN:
         return []
     updates = []
-    if space_contains(board, i, j + 2, c):
-        updates.append((o, i, j + 1))
-    if space_contains(board, i, j - 2, c):
-        updates.append((o, i, j - 1))
-    if space_contains(board, i + 2, j, c):
-        updates.append((o, i + 1, j))
-    if space_contains(board, i - 2, j, c):
-        updates.append((o, i - 1, j))
+    if space_contains(line, i + 2, c):
+        updates.append((o, i + 1))
+    if space_contains(line, i - 2, c):
+        updates.append((o, i - 1))
     return updates
 
 
@@ -90,29 +80,13 @@ def counts(unit):
     return whites, blacks
 
 
-def complete_row(board, i, j):
-    row = board[i]
-    n = len(row) // 2
-    c = board[i][j]
-    o = other(c)
-    whites, blacks = counts(row)
+def complete_line(line, i):
+    n = len(line) // 2
+    whites, blacks = counts(line)
     if whites == n:
-        return [(BLACK, i, jj) for jj in range(len(row)) if row[jj] == UNKNOWN]
+        return [(BLACK, j) for j in range(2 * n) if line[j] == UNKNOWN]
     if blacks == n:
-        return [(WHITE, i, jj) for jj in range(len(row)) if row[jj] == UNKNOWN]
-    return []
-
-
-def complete_col(board, i, j):
-    col = [row[j] for row in board]
-    n = len(col) // 2
-    c = board[i][j]
-    o = other(c)
-    whites, blacks = counts(col)
-    if whites == n:
-        return [(BLACK, ii, j) for ii in range(len(col)) if col[ii] == UNKNOWN]
-    if blacks == n:
-        return [(WHITE, ii, j) for ii in range(len(col)) if col[ii] == UNKNOWN]
+        return [(WHITE, j) for j in range(2 * n) if line[j] == UNKNOWN]
     return []
 
 
@@ -120,10 +94,15 @@ def all_updates(board, i, j):
     propagators = [
             two_in_a_row,
             fill_in_holes,
-            complete_row,
-            complete_col,
+            complete_line,
         ]
-    return chain.from_iterable((p(board, i, j) for p in propagators))
+    updates = []
+    row = board[i]
+    col = [r[j] for r in board]
+    for p in propagators:
+        updates.extend([(c, i, jj) for (c, jj) in p(row, j)])
+        updates.extend([(c, ii, j) for (c, ii) in p(col, i)])
+    return updates
 
 
 def propagate(board):
