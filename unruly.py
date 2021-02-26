@@ -80,13 +80,53 @@ def counts(line):
     return whites, blacks
 
 
+def space_for_three(line, c):
+    """Is there space for three adjacent squares of colour c?
+
+    Returns the first index of every such triple."""
+    o = other(c)
+    starts = []
+    for i in range(len(line) - 2):
+        if o not in line[i:i+3]:
+            starts.append(i)
+    return starts
+
+
+def intersect_threes(starts, n):
+    """Given start indices for triples, find spaces common to them all"""
+    if len(starts) == 0:
+        return set(range(2 * n))
+    i = starts.pop(0)
+    indices = set([i, i + 1, i + 2])
+    print(indices)
+    for j in starts:
+        indices &= set([j, j + 1, j + 2])
+        print(indices)
+    return indices
+
+
 def complete_line(line, i):
     n = len(line) // 2
     whites, blacks = counts(line)
+    unknowns = [j for j, s in enumerate(line) if s == UNKNOWN]
     if whites == n:
-        return [(BLACK, j) for j in range(2 * n) if line[j] == UNKNOWN]
+        return [(BLACK, j) for j in unknowns]
     if blacks == n:
-        return [(WHITE, j) for j in range(2 * n) if line[j] == UNKNOWN]
+        return [(WHITE, j) for j in unknowns]
+    if whites == n - 1:
+        possible_threes = space_for_three(line, BLACK)
+        possible_whites = intersect_threes(possible_threes, n)
+        print(f"possible_whites = {possible_whites}")
+        updates = [(BLACK, j) for j in unknowns if j not in possible_whites]
+        print(f"Completing line {board_to_str([line])}: updates = {updates}")
+        return updates
+    if blacks == n - 1:
+        possible_threes = space_for_three(line, WHITE)
+        possible_blacks = intersect_threes(possible_threes, n)
+        print(f"possible_blacks = {possible_blacks}")
+        updates = [(WHITE, j) for j in unknowns if j not in possible_blacks]
+        print(f"Completing line {board_to_str([line])}: updates = {updates}")
+        return updates
     return []
 
 
