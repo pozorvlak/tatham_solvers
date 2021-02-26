@@ -29,12 +29,12 @@ def read_board(lines):
     return [[char_to_enum(c) for c in line.rstrip("\n")] for line in lines]
 
 
-def enum_to_char(e):
-    return ' BW'[e]
+def char(e):
+    return '_BW'[e]
 
 
 def board_to_str(board):
-    return "\n".join(["".join([' BW'[e] for e in row]) for row in board])
+    return "\n".join(["".join([char(e) for e in row]) for row in board])
 
 
 def space_contains(line, i, c):
@@ -122,10 +122,10 @@ def propagate(board):
                 board[ii][jj] = c
                 frontier.append((ii, jj))
             else:
-                raise Error(f"""
+                raise ValueError(f"""
 Conflict at {(ii, jj)}!
 
-Update from {(i, j)} implies should be {c}, but is already {board[ii][jj]}.
+Update from {(i, j)} implies should be {char(c)}, but is already {char(board[ii][jj])}.
 
 Full board:
 {board_to_str(board)}""")
