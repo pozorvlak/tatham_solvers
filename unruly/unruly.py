@@ -173,7 +173,7 @@ def test_complete_line():
 
 
 def test_solutions_():
-    for infile in ['board1', 'board2', 'board3', 'board4']:
+    for infile in ['board1', 'board2', 'board3', 'board4', 'board5']:
         with open(infile) as f:
             board = read_board(f.readlines())
             solution = propagate(board)
