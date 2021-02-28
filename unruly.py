@@ -92,8 +92,9 @@ def space_for_three(line, c):
     return starts
 
 
-def intersect_threes(starts, indices):
+def intersect_threes(starts, unknowns):
     """Given start indices for triples, find spaces common to them all"""
+    indices = set(unknowns)
     for j in starts:
         indices &= set([j, j + 1, j + 2])
     return indices
@@ -108,18 +109,18 @@ def possible_remaining(line, c, unknowns):
 def complete_line(line, i):
     n = len(line) // 2
     whites, blacks = counts(line)
-    unknowns = set([j for j, s in enumerate(line) if s == UNKNOWN])
+    unknowns = [j for j, s in enumerate(line) if s == UNKNOWN]
     if whites == n:
         return [(BLACK, j) for j in unknowns]
     if blacks == n:
         return [(WHITE, j) for j in unknowns]
     if whites == n - 1:
         possible_whites = possible_remaining(line, WHITE, unknowns)
-        updates = [(BLACK, j) for j in unknowns - possible_whites]
+        updates = [(BLACK, j) for j in set(unknowns) - possible_whites]
         return updates
     if blacks == n - 1:
         possible_blacks = possible_remaining(line, BLACK, unknowns)
-        updates = [(WHITE, j) for j in unknowns - possible_blacks]
+        updates = [(WHITE, j) for j in set(unknowns) - possible_blacks]
         return updates
     return []
 
@@ -164,6 +165,11 @@ Update from {(i, j)} implies should be {char(c)}, but is already {char(board[ii]
 Full board:
 {board_to_str(board)}""")
     return board
+
+
+def test_complete_line():
+    line = [char_to_enum(c) for c in 'BWWBWB__BWWB_W']
+    assert complete_line(line, 0) == [(BLACK, 12)]
 
 
 if __name__ == '__main__':
