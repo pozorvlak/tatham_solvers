@@ -172,6 +172,16 @@ def test_complete_line():
     assert complete_line(line, 0) == [(BLACK, 12)]
 
 
+def test_solutions_():
+    for infile in ['board1', 'board2', 'board2']:
+        with open(infile) as f:
+            board = read_board(f.readlines())
+            solution = propagate(board)
+        with open(infile + '.soln') as f:
+            expected = read_board(f.readlines())
+        assert solution == expected, infile
+
+
 if __name__ == '__main__':
     board = read_board(fileinput.input())
     board = propagate(board)
