@@ -46,7 +46,7 @@ class Board:
         if self.wrap:
             i = i % self.size
             j = j % self.size
-        elif not (0 < i < self.size and 0 < j < self.size):
+        elif not (0 <= i < self.size and 0 <= j < self.size):
             return
         orientation = self.orientations[i, j]
         (self.left[i, j], self.up[i, j], self.right[i, j], self.down[i, j]) = self.exits(i, j, orientation)
