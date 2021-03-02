@@ -87,14 +87,12 @@ class Board:
             index = np.random.choice(np.arange(self.size ** 2), p=(penalties / error))
             i, j = divmod(index, self.size)
             current = self.orientations[i, j]
-            self.orientations[i, j] = (current + 1) % 4
-            self.set_exits(i, j)
+            new_orientation = (current + 1) % 4
             # if not an improvement, reject with probability new / (new + old)
-            # TODO we don't need to recalculate all penalties for this
             old_penalty = penalties[index]
-            new_penalty = self.penalties()[i, j]
-            if new_penalty > old_penalty and random() < new_penalty / (new_penalty + old_penalty):
-                self.orientations[i, j] = current
+            new_penalty = self.penalty(i, j, new_orientation)
+            if new_penalty < old_penalty or random() > new_penalty / (new_penalty + old_penalty):
+                self.orientations[i, j] = new_orientation
                 self.set_exits(i, j)
         return count
 
