@@ -51,10 +51,10 @@ class Board:
         for i in range(self.size):
             for j in range(self.size):
                 ret[i, j] = (
-                        self.left[i, j] == self.right[i, j - 1] +
-                        self.up[i, j] == self.down[i - 1, j] +
-                        self.right[i, j] == self.left[i, j + 1] +
-                        self.down[i, j] == self.up[i + 1, j]
+                        int(self.left[i, j] != self.right[i, j - 1]) +
+                        int(self.up[i, j] != self.down[i - 1, j]) +
+                        int(self.right[i, j] != self.left[i, j + 1]) +
+                        int(self.down[i, j] != self.up[i + 1, j])
                 )
         return ret
 
