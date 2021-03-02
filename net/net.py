@@ -27,7 +27,7 @@ pics = {
 
 
 class Board:
-    def __init__(self, lines, wrap=False):
+    def __init__(self, lines, wrap=False, tabu_length=20):
         self.size = len(lines)
         self.wrap = wrap
         self.pieces = [line.rstrip('\n') for line in lines]
@@ -41,6 +41,8 @@ class Board:
         for i in range(self.size):
             for j in range(self.size):
                 self.set_exits(i, j)
+        self.tabu_list = []
+        self.tabu_length = tabu_length
 
     def set_exits(self, i, j):
         if self.wrap:
@@ -82,7 +84,15 @@ class Board:
         ])
 
     def update(self, i, j, new_orientation):
+        old_orientation = self.orientations[i, j]
         self.orientations[i, j] = new_orientation
+        new_orientations = self.orientations.tolist()
+        if new_orientations in self.tabu_list:
+            self.orientations[i, j] = old_orientation
+            return
+        self.tabu_list.append(new_orientations)
+        if len(self.tabu_list) > self.tabu_length:
+            self.tabu_list.pop(0)
         self.set_exits(i, j)
         self.set_exits(i - 1, j)
         self.set_exits(i + 1, j)
