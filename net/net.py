@@ -42,21 +42,29 @@ class Board:
                 self.set_exits(i, j)
 
     def set_exits(self, i, j):
-        shape = shapes[self.pieces[i][j]]
         orientation = self.orientations[i, j]
-        (self.left[i, j], self.up[i, j], self.right[i, j], self.down[i, j]) = rotate(shape, orientation)
+        (self.left[i, j], self.up[i, j], self.right[i, j], self.down[i, j]) = self.exits(i, j, orientation)
+
+    def exits(self, i, j, orientation):
+        shape = shapes[self.pieces[i][j]]
+        return rotate(shape, orientation)
+
+
+    def penalty(self, i, j, orientation):
+        left, up, right, down = self.exits(i, j, orientation)
+        return (
+            int(left != self.right[i, j - 1]) +
+            int(up != self.down[i - 1, j]) +
+            int(right != self.left[i, j + 1]) +
+            int(down != self.up[i + 1, j])
+        )
 
     def penalties(self):
         ret = np.zeros((self.size, self.size))
         # TODO vectorise this
         for i in range(self.size):
             for j in range(self.size):
-                ret[i, j] = (
-                        int(self.left[i, j] != self.right[i, j - 1]) +
-                        int(self.up[i, j] != self.down[i - 1, j]) +
-                        int(self.right[i, j] != self.left[i, j + 1]) +
-                        int(self.down[i, j] != self.up[i + 1, j])
-                )
+                ret[i, j] = self.penalty(i, j, self.orientations[i, j])
         return ret
 
     def __str__(self):
