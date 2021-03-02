@@ -110,7 +110,7 @@ if __name__ == '__main__':
     print(board.penalties())
     print(np.sum(board.penalties()))
     print()
-    count = board.solve(steps=500)
+    count = board.solve(steps=50000)
     print(f"After {count} steps:")
     print(board)
     print(board.penalties())
