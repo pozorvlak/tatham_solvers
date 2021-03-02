@@ -79,6 +79,15 @@ class Board:
             for i in range(self.size)
         ])
 
+    def update(self, i, j, new_orientation):
+        self.orientations[i, j] = new_orientation
+        self.set_exits(i, j)
+        self.set_exits(i - 1, j)
+        self.set_exits(i + 1, j)
+        self.set_exits(i, j - 1)
+        self.set_exits(i, j + 1)
+
+
     def solve(self, steps=None):
         count = 0
         while True:
@@ -95,12 +104,7 @@ class Board:
             weights = np.array([1 / (1 + self.penalty(i, j, o)) for o in range(4)])
             weights = weights / np.sum(weights)
             new_orientation = np.random.choice(np.arange(4), p=weights)
-            self.orientations[i, j] = new_orientation
-            self.set_exits(i, j)
-            self.set_exits(i - 1, j)
-            self.set_exits(i + 1, j)
-            self.set_exits(i, j - 1)
-            self.set_exits(i, j + 1)
+            self.update(i, j, new_orientation)
         return count
 
 
