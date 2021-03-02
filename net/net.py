@@ -92,18 +92,15 @@ class Board:
                 break
             index = np.random.choice(np.arange(self.size ** 2), p=(penalties / error))
             i, j = divmod(index, self.size)
-            current = self.orientations[i, j]
-            new_orientation = (current + 1) % 4
-            # if not an improvement, reject with probability new / (new + old)
-            old_penalty = penalties[index]
-            new_penalty = self.penalty(i, j, new_orientation)
-            if new_penalty < old_penalty or random() > new_penalty / (new_penalty + old_penalty):
-                self.orientations[i, j] = new_orientation
-                self.set_exits(i, j)
-                self.set_exits(i - 1, j)
-                self.set_exits(i + 1, j)
-                self.set_exits(i, j - 1)
-                self.set_exits(i, j + 1)
+            weights = np.array([1 / (1 + self.penalty(i, j, o)) for o in range(4)])
+            weights = weights / np.sum(weights)
+            new_orientation = np.random.choice(np.arange(4), p=weights)
+            self.orientations[i, j] = new_orientation
+            self.set_exits(i, j)
+            self.set_exits(i - 1, j)
+            self.set_exits(i + 1, j)
+            self.set_exits(i, j - 1)
+            self.set_exits(i, j + 1)
         return count
 
 
