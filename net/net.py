@@ -73,9 +73,11 @@ class Board:
                 ret[i, j] = self.penalty(i, j, self.orientations[i, j])
         return ret
 
-    def __str__(self):
+    def __str__(self, orientations=None):
+        if orientations is None:
+            orientations = self.orientations
         return "\n".join([
-            ''.join([pics[self.pieces[i][j]][self.orientations[i, j]] for j in range(self.size)])
+            ''.join([pics[self.pieces[i][j]][orientations[i, j]] for j in range(self.size)])
             for i in range(self.size)
         ])
 
@@ -90,12 +92,17 @@ class Board:
 
     def solve(self, steps=None):
         count = 0
+        min_penalty, best_iteration = np.inf, 0
         while True:
             if count >= steps:
                 break
             count += 1
             penalties = np.reshape(self.penalties(), self.size ** 2)
             error = np.sum(penalties)
+            if error < min_penalty:
+                min_penalty = error
+                best_iteration = count - 1
+                best_orientations = np.copy(self.orientations)
             if error == 0:
                 # Finished!
                 break
@@ -105,7 +112,7 @@ class Board:
             weights = weights / np.sum(weights)
             new_orientation = np.random.choice(np.arange(4), p=weights)
             self.update(i, j, new_orientation)
-        return count
+        return count, min_penalty, best_iteration, best_orientations
 
 
 if __name__ == '__main__':
@@ -114,8 +121,12 @@ if __name__ == '__main__':
     print(board.penalties())
     print(np.sum(board.penalties()))
     print()
-    count = board.solve(steps=50000)
+    count, best_score, best_iteration, best_board = board.solve(steps=50000)
     print(f"After {count} steps:")
     print(board)
     print(board.penalties())
     print(np.sum(board.penalties()))
+    print()
+    print(f"Best configuration, after {best_iteration} steps:")
+    print(best_score)
+    print(board.__str__(orientations=best_board))
