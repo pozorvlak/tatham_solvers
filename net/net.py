@@ -29,6 +29,7 @@ pics = {
 class Board:
     def __init__(self, lines, wrap=False):
         self.size = len(lines)
+        self.wrap = wrap
         self.pieces = [line.rstrip('\n') for line in lines]
         self.orientations = np.zeros((self.size, self.size), dtype=int)
         # If the board doesn't wrap, add an extra line at the edge which is always False
@@ -42,6 +43,11 @@ class Board:
                 self.set_exits(i, j)
 
     def set_exits(self, i, j):
+        if self.wrap:
+            i = i % self.size
+            j = j % self.size
+        elif not (0 < i < self.size and 0 < j < self.size):
+            return
         orientation = self.orientations[i, j]
         (self.left[i, j], self.up[i, j], self.right[i, j], self.down[i, j]) = self.exits(i, j, orientation)
 
@@ -94,6 +100,10 @@ class Board:
             if new_penalty < old_penalty or random() > new_penalty / (new_penalty + old_penalty):
                 self.orientations[i, j] = new_orientation
                 self.set_exits(i, j)
+                self.set_exits(i - 1, j)
+                self.set_exits(i + 1, j)
+                self.set_exits(i, j - 1)
+                self.set_exits(i, j + 1)
         return count
 
 
