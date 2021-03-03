@@ -1,0 +1,13 @@
+{
+    "openFiles": [
+        "unruly.mzn"
+    ],
+    "openTab": 0,
+    "projectFiles": [
+        "unruly.mzn",
+        "unruly_row.mzn"
+    ],
+    "selectedBuiltinConfigId": "org.chuffed.chuffed",
+    "selectedBuiltinConfigVersion": "0.10.4",
+    "version": 106
+}
