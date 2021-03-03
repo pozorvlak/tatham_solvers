@@ -1,0 +1,9 @@
+width = 5;
+height = 5;
+wrap = true;
+shape = 
+[|L, L, Q, I, Q, 
+ |T, I, Q, L, L, 
+ |L, T, T, L, Q, 
+ |L, Q, L, T, T, 
+ |Q, Q, L, T, Q|];
