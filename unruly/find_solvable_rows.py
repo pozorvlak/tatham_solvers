@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from collections import Counter
+from collections import defaultdict, Counter
 from itertools import product
 import sys
 
@@ -58,22 +58,41 @@ def get_solvable(solutions):
     return solvable
 
 
-def solvable_with_rules(mask):
+def solve_with_cp(mask):
     board = unruly.read_board([mask])
     solved = unruly.board_to_str(unruly.propagate(board))
-    return "_" not in solved
+    return solved
 
 
 def main(n):
     all_solutions = get_all_solutions(n)
     by_bit = filter_by_bit(all_solutions)
     solutions = solve_masks(n, by_bit)
-    print(get_counts(solutions))
+    # print(get_counts(solutions))
     solvable = get_solvable(solutions)
+    by_answer = defaultdict(set)
     for mask in solvable:
-        if not solvable_with_rules(mask):
+        cp_soln = solve_with_cp(mask)
+        if '_' in cp_soln:
             solution = all_solutions[list(solutions[mask])[0]].row
-            print(f"{mask} -> {mask_to_str(solution)}")
+            by_answer[mask_to_str(solution)].add((mask, cp_soln))
+    fixpoints = []
+    for solution, partials in by_answer.items():
+        # print(solution)
+        for (mask, cp_soln) in partials:
+            if mask == cp_soln:
+                # print(f"FIXPOINT: {mask}")
+                fixpoints.append(mask)
+            # else:
+                # print(f"{mask} gets stuck at {cp_soln}")
+        # print()
+    print(f"n = {n};")
+    print(f"num_fixpoints = {len(fixpoints)};")
+    name = dict(B="BLACK", W="WHITE", _="UNKNOWN")
+    print("fixpoints = ")
+    print("[|" +
+        ",\n |".join([", ".join([name[x] for x in mask]) for mask in fixpoints])
+        + "|];")
 
 
 if __name__ == '__main__':
