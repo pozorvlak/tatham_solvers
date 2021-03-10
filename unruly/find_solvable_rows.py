@@ -64,18 +64,17 @@ def solve_with_cp(mask):
     return solved
 
 
-def main(n):
-    all_solutions = get_all_solutions(n)
-    by_bit = filter_by_bit(all_solutions)
-    solutions = solve_masks(n, by_bit)
-    # print(get_counts(solutions))
-    solvable = get_solvable(solutions)
+def group_by_answer(solvable, solutions, all_solutions):
     by_answer = defaultdict(set)
     for mask in solvable:
         cp_soln = solve_with_cp(mask)
         if '_' in cp_soln:
             solution = all_solutions[list(solutions[mask])[0]].row
             by_answer[mask_to_str(solution)].add((mask, cp_soln))
+    return by_answer
+
+
+def get_fixpoints(by_answer):
     fixpoints = []
     for solution, partials in by_answer.items():
         # print(solution)
@@ -86,6 +85,10 @@ def main(n):
             # else:
                 # print(f"{mask} gets stuck at {cp_soln}")
         # print()
+    return fixpoints
+
+
+def output_as_minizinc(n, fixpoints):
     print(f"n = {n};")
     print(f"num_fixpoints = {len(fixpoints)};")
     name = dict(B="BLACK", W="WHITE", _="UNKNOWN")
@@ -93,6 +96,17 @@ def main(n):
     print("[|" +
         ",\n |".join([", ".join([name[x] for x in mask]) for mask in fixpoints])
         + "|];")
+
+
+def main(n):
+    all_solutions = get_all_solutions(n)
+    by_bit = filter_by_bit(all_solutions)
+    solutions = solve_masks(n, by_bit)
+    # print(get_counts(solutions))
+    solvable = get_solvable(solutions)
+    by_answer = group_by_answer(solvable, solutions, all_solutions)
+    fixpoints = get_fixpoints(by_answer)
+    output_as_minizinc(n, fixpoints)
 
 
 if __name__ == '__main__':
