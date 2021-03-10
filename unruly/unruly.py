@@ -52,9 +52,15 @@ def two_in_a_row(line, i):
         return []
     updates = []
     if space_contains(line, i + 1, c):
-        updates.extend([(o, i + 2), (o, i - 1)])
+        if space_contains(line, i + 2, UNKNOWN):
+            updates.append((o, i + 2))
+        if space_contains(line, i - 1, UNKNOWN):
+            updates.append((o, i - 1))
     if space_contains(line, i - 1, c):
-        updates.extend([(o, i - 2), (o, i + 1)])
+        if space_contains(line, i - 2, UNKNOWN):
+            updates.append((o, i - 2))
+        if space_contains(line, i + 1, UNKNOWN):
+            updates.append((o, i + 1))
     return updates
 
 
@@ -65,9 +71,9 @@ def fill_in_holes(line, i):
     if c == UNKNOWN:
         return []
     updates = []
-    if space_contains(line, i + 2, c):
+    if space_contains(line, i + 2, c) and space_contains(line, i + 1, UNKNOWN):
         updates.append((o, i + 1))
-    if space_contains(line, i - 2, c):
+    if space_contains(line, i - 2, c) and space_contains(line, i - 1, UNKNOWN):
         updates.append((o, i - 1))
     return updates
 
