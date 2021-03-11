@@ -6,14 +6,16 @@ set of int: COLUMN = 1..2*n;
 enum SPACE = { BLACK, WHITE, UNKNOWN };
 
 int: num_fixpoints;
-array[1..num_fixpoints, COLUMN] of SPACE: fixpoints;
+set of int: MASK = 1..num_fixpoints;
+array[MASK, COLUMN] of SPACE: fixpoints;
+% array[MASK] of set of int: solutions;
 
 array[ROW, COLUMN] of var SPACE: board;
+array[COLUMN] of var MASK: column;
+array[ROW] of var MASK: row;
 
-include "table.mzn";
-
-constraint forall(r in ROW)(table([board[r, c]| c in COLUMN], fixpoints));
-constraint forall(c in COLUMN)(table([board[r, c]| r in ROW], fixpoints));
+constraint forall(r in ROW, c in COLUMN)(board[r, c] = fixpoints[row[r], c]);
+constraint forall(r in ROW, c in COLUMN)(board[r, c] = fixpoints[column[c], r]);
 
 solve satisfy;
 

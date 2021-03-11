@@ -6,8 +6,6 @@ import sys
 
 from minizinc import Instance, Model, Solver
 
-import unruly
-
 
 # 0 = black, 1 = white, 2 = unknown
 def mask_to_str(mask):
@@ -23,6 +21,16 @@ def get_all_solutions(n):
     return all_solutions
 
 
+def get_fixpoints(n):
+    solver = Solver.lookup("chuffed")
+    model = Model("fixpoints.mzn")
+    instance = Instance(solver, model)
+    instance['n'] = n
+    fixpoints = instance.solve(all_solutions=True)
+    indices = {'BLACK': 0, 'WHITE': 1, 'UNKNOWN': 2}
+    return [[indices[c] for c in f.row] for f in fixpoints]
+
+
 def filter_by_bit(all_solutions):
     all_indices = set(range(len(all_solutions)))
     by_bit = [(set(), set(), all_indices)  for i in range(2 * n)]
@@ -32,10 +40,11 @@ def filter_by_bit(all_solutions):
     return by_bit
 
 
-def solve_masks(n, by_bit):
-    all_indices = set(by_bit[0][2])
+def solve_masks(masks, all_solutions):
+    all_indices = set(range(len(all_solutions)))
+    by_bit = filter_by_bit(all_solutions)
     solutions = {}
-    for mask in product(*([0, 1, 2] for i in range(2 * n))):
+    for mask in masks:
         matches = set(all_indices)
         for b in range(2 * n):
             matches &= by_bit[b][mask[b]]
@@ -58,34 +67,16 @@ def get_solvable(solutions):
     return solvable
 
 
-def solve_with_cp(mask):
-    board = unruly.read_board([mask])
-    solved = unruly.board_to_str(unruly.propagate(board))
-    return solved
-
-
-def group_by_answer(solvable, solutions, all_solutions):
-    by_answer = defaultdict(set)
-    for mask in solvable:
-        cp_soln = solve_with_cp(mask)
-        if '_' in cp_soln:
-            solution = all_solutions[list(solutions[mask])[0]].row
-            by_answer[mask_to_str(solution)].add((mask, cp_soln))
-    return by_answer
-
-
-def get_fixpoints(by_answer):
-    fixpoints = []
-    for solution, partials in by_answer.items():
-        # print(solution)
-        for (mask, cp_soln) in partials:
-            if mask == cp_soln:
-                # print(f"FIXPOINT: {mask}")
-                fixpoints.append(mask)
-            # else:
-                # print(f"{mask} gets stuck at {cp_soln}")
-        # print()
-    return fixpoints
+def get_boards(n, fixpoints):
+    solver = Solver.lookup("chuffed")
+    model = Model("unsolvable.mzn")
+    instance = Instance(solver, model)
+    instance['n'] = n
+    instance['num_fixpoints'] = len(fixpoints)
+    ix = {'B': 'BLACK', 'W': 'WHITE', '_': 'UNKNOWN'}
+    instance['fixpoints'] = [[ix[n] for n in mask] for mask in fixpoints]
+    board = instance.solve()
+    return board
 
 
 def output_as_minizinc(n, fixpoints):
@@ -100,13 +91,13 @@ def output_as_minizinc(n, fixpoints):
 
 def main(n):
     all_solutions = get_all_solutions(n)
-    by_bit = filter_by_bit(all_solutions)
-    solutions = solve_masks(n, by_bit)
-    # print(get_counts(solutions))
+    fixpoints = get_fixpoints(n)
+    solutions = solve_masks(fixpoints, all_solutions)
+    print(get_counts(solutions))
     solvable = get_solvable(solutions)
-    by_answer = group_by_answer(solvable, solutions, all_solutions)
-    fixpoints = get_fixpoints(by_answer)
-    output_as_minizinc(n, fixpoints)
+    output_as_minizinc(n, solvable)
+    # board = get_boards(n, solvable)
+    # print(board)
 
 
 if __name__ == '__main__':

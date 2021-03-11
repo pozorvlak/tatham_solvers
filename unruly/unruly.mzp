@@ -1,11 +1,20 @@
 {
     "openFiles": [
-        "unruly.mzn"
-    ],
-    "openTab": 0,
-    "projectFiles": [
         "unruly.mzn",
-        "unruly_row.mzn"
+        "unruly_row.mzn",
+        "fixpoints.mzn",
+        "unsolvable.mzn"
+    ],
+    "openTab": 3,
+    "projectFiles": [
+        "../net/board1.dzn",
+        "fixpoints.mzn",
+        "fixpoints_5.dzn",
+        "fixpoints_6.dzn",
+        "solvable_5.dzn",
+        "unruly.mzn",
+        "unruly_row.mzn",
+        "unsolvable.mzn"
     ],
     "selectedBuiltinConfigId": "org.chuffed.chuffed",
     "selectedBuiltinConfigVersion": "0.10.4",
