@@ -5,6 +5,12 @@ set of int: COLUMN = 1..2*n;
 
 array[ROW, COLUMN] of var bool: board;
 
+% must match the filled-in squares in the input
+enum SPACE = { BLACK, WHITE, UNKNOWN };
+array[ROW, COLUMN] of SPACE: puzzle;
+constraint forall(r in ROW, c in COLUMN)(puzzle[r, c] = BLACK -> board[r, c] = false);
+constraint forall(r in ROW, c in COLUMN)(puzzle[r, c] = WHITE -> board[r, c] = true);
+
 % Exactly n blacks and n whites in each row and column
 constraint forall(r in ROW)(sum(c in COLUMN)(board[r, c]) = n);
 constraint forall(c in COLUMN)(sum(r in ROW)(board[r, c]) = n);
