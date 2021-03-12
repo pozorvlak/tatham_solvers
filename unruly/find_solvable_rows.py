@@ -95,13 +95,14 @@ def output_as_minizinc(n, fixpoints):
 
 def main(n):
     all_solutions = get_all_solutions(n)
-    print(f"Total number of solutions: {len(all_solutions)}")
+    print(f"% Total number of solutions: {len(all_solutions)}")
     fixpoints = get_fixpoints(n)
-    print(f"Total number of fixpoints: {len(fixpoints)}")
+    print(f"% Total number of fixpoints: {len(fixpoints)}")
     solutions = solve_masks(fixpoints, all_solutions)
-    print(get_counts(solutions))
+    print("% ", get_counts(solutions))
     solvable = get_solvable(solutions)
-    # output_as_minizinc(n, solvable)
+    print(f"% Total number of uniquely-solvable fixpoints: {len(solvable)}")
+    output_as_minizinc(n, solvable)
     # board = get_boards(n, solvable)
     # print(board)
 
