@@ -3,14 +3,21 @@
         "unruly.mzn",
         "unruly_row.mzn",
         "fixpoints.mzn",
-        "unsolvable.mzn"
+        "unsolvable.mzn",
+        "fixpoints_8.dzn",
+        "fixpoints_7.dzn",
+        "fixpoints_6.dzn",
+        "board6.dzn"
     ],
-    "openTab": 3,
+    "openTab": 0,
     "projectFiles": [
         "../net/board1.dzn",
+        "board6.dzn",
         "fixpoints.mzn",
         "fixpoints_5.dzn",
         "fixpoints_6.dzn",
+        "fixpoints_7.dzn",
+        "fixpoints_8.dzn",
         "solvable_5.dzn",
         "unruly.mzn",
         "unruly_row.mzn",
