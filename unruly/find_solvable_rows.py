@@ -31,7 +31,7 @@ def get_fixpoints(n):
     indices = {'BLACK': 0, 'WHITE': 1, 'UNKNOWN': 2}
     masks = [[indices[c] for c in f.row] for f in fixpoints]
     fixed = [unruly.propagate([mask]) for mask in masks]
-    deduped = {unruly.board_to_str(f): f[0] for f in fixed}
+    deduped = {unruly.board_to_str(f): f[0] for f in fixed if unruly.UNKNOWN in f[0]}
     return list(deduped.values())
 
 
