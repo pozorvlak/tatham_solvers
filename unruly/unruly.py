@@ -3,9 +3,9 @@
 import fileinput
 
 
-UNKNOWN = 0
-BLACK = 1
-WHITE = 2
+BLACK = 0
+WHITE = 1
+UNKNOWN = 2
 
 
 def char_to_enum(c):
@@ -30,7 +30,7 @@ def read_board(lines):
 
 
 def char(e):
-    return '_BW'[e]
+    return 'BW_'[e]
 
 
 def board_to_str(board):

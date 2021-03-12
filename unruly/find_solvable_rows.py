@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from collections import defaultdict, Counter
-from itertools import product
 import sys
 
 from minizinc import Instance, Model, Solver
+
+import unruly
 
 
 # 0 = black, 1 = white, 2 = unknown
@@ -28,7 +29,10 @@ def get_fixpoints(n):
     instance['n'] = n
     fixpoints = instance.solve(all_solutions=True)
     indices = {'BLACK': 0, 'WHITE': 1, 'UNKNOWN': 2}
-    return [[indices[c] for c in f.row] for f in fixpoints]
+    masks = [[indices[c] for c in f.row] for f in fixpoints]
+    fixed = [unruly.propagate([mask]) for mask in masks]
+    deduped = {unruly.board_to_str(f): f[0] for f in fixed}
+    return list(deduped.values())
 
 
 def filter_by_bit(all_solutions):
@@ -91,11 +95,13 @@ def output_as_minizinc(n, fixpoints):
 
 def main(n):
     all_solutions = get_all_solutions(n)
+    print(f"Total number of solutions: {len(all_solutions)}")
     fixpoints = get_fixpoints(n)
+    print(f"Total number of fixpoints: {len(fixpoints)}")
     solutions = solve_masks(fixpoints, all_solutions)
     print(get_counts(solutions))
     solvable = get_solvable(solutions)
-    output_as_minizinc(n, solvable)
+    # output_as_minizinc(n, solvable)
     # board = get_boards(n, solvable)
     # print(board)
 
