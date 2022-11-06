@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+"""
+Tries to find Unruly boards in which
+ - Every row and column has a unique solution
+ - None of the standard four tactics are applicable
+
+This is a very strict condition, which doesn't seem to be achievable in
+practice. It's much stronger than we actually need, but also greatly reduces
+the size of the search space.
+"""
+
 from collections import defaultdict, Counter
 import sys
 

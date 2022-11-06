@@ -1,5 +1,23 @@
 #!/usr/bin/env python
 
+"""
+Hand-written Python solver for partial Unruly boards
+
+This solver works by applying the following tactics until a fixpoint is reached:
+
+ * _BB_ -> WBBW
+ * B_B -> BWB
+ * If a row/column has n black squares, all remaining empty squares must be white
+ * If a row/column has n-1 black squares, the remaining black square must lie in
+   the intersection of all the places you can make a line of three whites; every
+   blank square outside that intersection must be white.
+
+These are the same tactics used by the Unruly generator in Simon Tatham's Portable
+Puzzle Collection to ensure that each generated puzzle has a unique solution. This
+solver does not guess or backtrack, and so there may be Unruly boards with unique
+solutions which it can't solve.
+"""
+
 import fileinput
 
 

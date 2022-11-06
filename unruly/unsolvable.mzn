@@ -1,3 +1,7 @@
+% Searches for Unruly boards whose rows and columns all come from a specified list.
+% The idea is that these should be fixpoints for a set of tactics, so the board
+% as a whole is a fixpoint for those tactics.
+
 int: n;
 
 set of int: ROW = 1..2*n;

@@ -1,3 +1,5 @@
+% Find legal Unruly rows/columns of a given size
+
 int: n;
 
 set of int: COLUMN = 1..2*n;
