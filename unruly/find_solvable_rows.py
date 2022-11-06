@@ -96,11 +96,8 @@ def get_boards(n, fixpoints):
 def output_as_minizinc(n, fixpoints):
     print(f"n = {n};")
     print(f"num_fixpoints = {len(fixpoints)};")
-    name = dict(B="BLACK", W="WHITE", _="UNKNOWN")
     print("fixpoints = ")
-    print("[|" +
-        ",\n |".join([", ".join([name[x] for x in mask]) for mask in fixpoints])
-        + "|];")
+    print(unruly.board_to_minizinc(fixpoints))
 
 
 def main(n):

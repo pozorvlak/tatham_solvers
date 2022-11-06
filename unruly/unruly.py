@@ -55,6 +55,13 @@ def board_to_str(board):
     return "\n".join(["".join([char(e) for e in row]) for row in board])
 
 
+def board_to_minizinc(board):
+    name = dict(B="BLACK", W="WHITE", _="UNKNOWN")
+    return ("[|" +
+        ",\n |".join([", ".join([name[x] for x in row]) for row in board])
+        + "|];")
+
+
 def space_contains(line, i, c):
     if i < 0 or i >= len(line):
         return False
