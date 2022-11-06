@@ -34,6 +34,6 @@ constraint forall(c in COLUMN)(
 
 solve satisfy;
 
-function var string: cell_to_char(var bool: cell) = if cell then "#" else " " endif;
+% function var string: cell_to_char(var bool: cell) = if cell then "#" else " " endif;
 
 output [ show2d(board) ];
