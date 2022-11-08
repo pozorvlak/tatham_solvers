@@ -89,8 +89,6 @@ def make_puzzle(n, size, s):
     for board in (puzzle, transposed):
         # At most n squares of each colour in a given row
         limit_cells_per_row(board, n, s)
-        # No more than two consecutive squares of the same colour
-        limit_consecutive(board, size, s)
         # "gaps" and "endcaps" tactics can't be applied
         no_gaps_or_endcaps(board, size, s)
         pass
@@ -106,18 +104,6 @@ def limit_cells_per_row(puzzle, n, s):
         s.add(white_count <= n)
         # "n" tactic can't be applied
         s.add((black_count == n) == (white_count == n))
-
-
-def limit_consecutive(puzzle, size, s):
-    for colour in range(2):
-        for i in range(size):
-            for j in range(size - 2):
-                row_sum = (
-                    b2i(puzzle(i, j) == colour)
-                    + b2i(puzzle(i, j + 1) == colour)
-                    + b2i(puzzle(i, j + 2) == colour)
-                )
-                s.add(row_sum < 3)
 
 
 def b2i(bool_expr):
