@@ -87,21 +87,19 @@ def make_puzzle(n, size, s):
             # Transpose puzzle to reduce code duplication
             s.add(transposed(j, i) == puzzle(i, j))
     for board in (puzzle, transposed):
-        # At most n squares of each colour in a given row
-        limit_cells_per_row(board, n, s)
         # "gaps" and "endcaps" tactics can't be applied
         no_gaps_or_endcaps(board, size, s)
+        # "n" tactic can't be applied
+        no_half_complete_rows(board, n, s)
         pass
     return puzzle
 
 
-def limit_cells_per_row(puzzle, n, s):
+def no_half_complete_rows(puzzle, n, s):
     size = 2 * n
     for i in range(size):
         black_count = sum(b2i(puzzle(i, j) == 0) for j in range(size))
         white_count = sum(b2i(puzzle(i, j) == 1) for j in range(size))
-        s.add(black_count <= n)
-        s.add(white_count <= n)
         # "n" tactic can't be applied
         s.add((black_count == n) == (white_count == n))
 
