@@ -15,7 +15,8 @@ import unruly
 def find_puzzle(n):
     size = 2 * n
     s = Optimize()
-    puzzle = make_puzzle(n, size, s)
+    puzzle = make_puzzle(size, s)
+    disallow_tactics(puzzle, n, size, s)
     solution = solution_for(puzzle, size, s)
     blank_count = sum(b2i(puzzle(i, j) == 2) for i in range(size) for j in range(size))
     s.add(blank_count > 10)
@@ -76,9 +77,8 @@ def not_this(variable, board, size):
     ))
 
 
-def make_puzzle(n, size, s):
+def make_puzzle(size, s):
     puzzle = Function('puzzle', IntSort(), IntSort(), IntSort())
-    transposed = Function('transposed', IntSort(), IntSort(), IntSort())
     # Squares must be black, white or empty
     for i in range(size):
         for j in range(size):
@@ -86,23 +86,19 @@ def make_puzzle(n, size, s):
             s.add(puzzle(i, j) >= 0)
             s.add(puzzle(i, j) <= 2)
             # Transpose puzzle to reduce code duplication
+    return puzzle
+
+
+def disallow_tactics(puzzle, n, size, s):
+    transposed = Function('transposed', IntSort(), IntSort(), IntSort())
+    for i in range(size):
+        for j in range(size):
             s.add(transposed(j, i) == puzzle(i, j))
     for board in (puzzle, transposed):
         # "gaps" and "endcaps" tactics can't be applied
         no_gaps_or_endcaps(board, size, s)
-        # "n" tactic can't be applied
+        # "n" and "n-1" tactics can't be applied
         no_half_complete_rows(board, n, s)
-    return puzzle
-
-
-def no_half_complete_rows(puzzle, n, s):
-    size = 2 * n
-    for i in range(size):
-        black_count = sum(b2i(puzzle(i, j) == 0) for j in range(size))
-        white_count = sum(b2i(puzzle(i, j) == 1) for j in range(size))
-        # "n" tactic can't be applied
-        s.add((black_count == n) == (white_count == n))
-        s.add((black_count == n - 1) == (white_count == n - 1))
 
 
 def b2i(bool_expr):
@@ -126,6 +122,16 @@ def no_gaps_or_endcaps(puzzle, size, s):
                 And(b < 2, b == c),
                 a == (1 - b)
             ))
+
+
+def no_half_complete_rows(puzzle, n, s):
+    size = 2 * n
+    for i in range(size):
+        black_count = sum(b2i(puzzle(i, j) == 0) for j in range(size))
+        white_count = sum(b2i(puzzle(i, j) == 1) for j in range(size))
+        # "n" tactic can't be applied
+        s.add((black_count == n) == (white_count == n))
+        s.add((black_count == n - 1) == (white_count == n - 1))
 
 
 def solution_for(puzzle, size, s):
