@@ -91,7 +91,6 @@ def make_puzzle(n, size, s):
         no_gaps_or_endcaps(board, size, s)
         # "n" tactic can't be applied
         no_half_complete_rows(board, n, s)
-        pass
     return puzzle
 
 
@@ -102,6 +101,7 @@ def no_half_complete_rows(puzzle, n, s):
         white_count = sum(b2i(puzzle(i, j) == 1) for j in range(size))
         # "n" tactic can't be applied
         s.add((black_count == n) == (white_count == n))
+        s.add((black_count == n - 1) == (white_count == n - 1))
 
 
 def b2i(bool_expr):
