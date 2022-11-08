@@ -42,12 +42,13 @@ def find_puzzle(n):
                 # print("Alternative solution found!")
                 solution2 = get_board(s, solution, size)
                 # Solution is not unique
-                if iterations % 100 == 0:
+                if iterations % 10 == 0:
                     sys.stdout.write(".")
                     sys.stdout.flush()
                 s.pop()
                 s.add(not_this(puzzle, board, size))
             else:
+                print()
                 return board, solution1
         else:
             print()
