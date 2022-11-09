@@ -5,10 +5,12 @@
         "fixpoints.mzn",
         "unsolvable.mzn",
         "untactical.mzn",
+        "board1.dzn",
     ],
     "openTab": 0,
     "projectFiles": [
         "../net/board1.dzn",
+        "board1.dzn",
         "fixpoints.mzn",
         "fixpoints_5.dzn",
         "fixpoints_6.dzn",
