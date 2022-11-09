@@ -7,13 +7,11 @@
         "fixpoints_8.dzn",
         "fixpoints_7.dzn",
         "fixpoints_6.dzn",
-        "board6.dzn"
         "untactical.mzn",
     ],
     "openTab": 0,
     "projectFiles": [
         "../net/board1.dzn",
-        "board6.dzn",
         "fixpoints.mzn",
         "fixpoints_5.dzn",
         "fixpoints_6.dzn",
