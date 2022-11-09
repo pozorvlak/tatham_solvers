@@ -2,7 +2,7 @@
 
 
 """
-Find Unruly boards which can't be solved using the four tactics using Z3.
+Minimize the number of clues in an Unruly puzzle while keeping the solution unique.
 """
 
 import fileinput
