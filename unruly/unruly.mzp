@@ -8,6 +8,7 @@
         "fixpoints_7.dzn",
         "fixpoints_6.dzn",
         "board6.dzn"
+        "untactical.mzn",
     ],
     "openTab": 0,
     "projectFiles": [
@@ -22,7 +23,8 @@
         "unruly.mpc",
         "unruly.mzn",
         "unruly_row.mzn",
-        "unsolvable.mzn"
+        "unsolvable.mzn",
+        "untactical.mzn"
     ],
     "selectedSolverConfigFile": "unruly.mpc",
     "version": 106
