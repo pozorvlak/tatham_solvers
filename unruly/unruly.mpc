@@ -1,0 +1,5 @@
+{
+    "intermediate-solutions": true,
+    "num-solutions": 5,
+    "solver": "org.chuffed.chuffed@0.10.4"
+}

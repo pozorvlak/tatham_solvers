@@ -19,11 +19,11 @@
         "fixpoints_7.dzn",
         "fixpoints_8.dzn",
         "solvable_5.dzn",
+        "unruly.mpc",
         "unruly.mzn",
         "unruly_row.mzn",
         "unsolvable.mzn"
     ],
-    "selectedBuiltinConfigId": "org.chuffed.chuffed",
-    "selectedBuiltinConfigVersion": "0.10.4",
+    "selectedSolverConfigFile": "unruly.mpc",
     "version": 106
 }
