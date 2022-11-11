@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Solve Net puzzles using Tabu search
+"""
+
 import fileinput
 from random import random
 
