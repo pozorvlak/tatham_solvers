@@ -11,6 +11,6 @@ I then switched to using the [Z3 Theorem Prover](https://github.com/Z3Prover/z3)
  - Check that no other solution exists for the puzzle
  - If not, disallow that puzzle and start again.
 
-You can find the code for doing this in `untactical_z3.py`. Once you've found some solutions, you can use `minimize_z3.py` to reduce the number of clues provided while preserving the uniqueness of the solution.
+You can find the code for doing this in `untactical_z3.py`. Once you've found some solutions, you can use `minimize_z3.py` to reduce the number of clues provided while preserving the uniqueness of the solution. The puzzles I found this way can be found under `found/`.
 
 The images I used in the talk were generated from textual board descriptions that you can find under `gates/`; the code to turn them into images is in `board_to_png.py`. You can see [my slides here](https://docs.google.com/presentation/d/1sKVxpxUiWvyh6OOCqEk4slcyN0_3X2VQzIORVEKRzcU/edit?usp=sharing).
