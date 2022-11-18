@@ -1,0 +1,3 @@
+pytest
+minizinc
+z3-solver
