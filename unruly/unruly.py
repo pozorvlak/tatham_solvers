@@ -204,7 +204,7 @@ def test_complete_line():
     assert complete_line(line, 0) == [(BLACK, 12)]
 
 
-def test_solutions_():
+def test_solutions():
     test_data = Path('test_data')
     for infile in ['board1', 'board2', 'board3', 'board4', 'board5']:
         with (test_data / infile).open() as f:
