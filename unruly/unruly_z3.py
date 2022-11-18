@@ -5,6 +5,7 @@
 Solve partial Unruly boards using the Z3 SMT solver from Microsoft Research
 """
 import fileinput
+from pathlib import Path
 
 from z3 import Function, IntSort, Solver, sat
 
@@ -43,12 +44,13 @@ def solve_board(board):
     return board
 
 
-def test_solutions_():
+def test_solutions():
+    test_data = Path('test_data')
     for infile in ['board1', 'board2', 'board3', 'board4', 'board5']:
-        with open(infile) as f:
+        with (test_data / infile).open() as f:
             board = unruly.read_board(f.readlines())
             solution = solve_board(board)
-        with open(infile + '.soln') as f:
+        with (test_data / (infile + '.soln')).open() as f:
             expected = unruly.read_board(f.readlines())
         assert solution == expected, infile
 

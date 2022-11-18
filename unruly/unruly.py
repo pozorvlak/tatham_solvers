@@ -19,6 +19,7 @@ solutions which it can't solve.
 """
 
 import fileinput
+from pathlib import Path
 
 
 BLACK = 0
@@ -204,11 +205,12 @@ def test_complete_line():
 
 
 def test_solutions_():
+    test_data = Path('test_data')
     for infile in ['board1', 'board2', 'board3', 'board4', 'board5']:
-        with open(infile) as f:
+        with (test_data / infile).open() as f:
             board = read_board(f.readlines())
             solution = propagate(board)
-        with open(infile + '.soln') as f:
+        with (test_data / (infile + '.soln')).open() as f:
             expected = read_board(f.readlines())
         assert solution == expected, infile
 
